@@ -1,20 +1,19 @@
 apply plugin: 'java'
-apply plugin: 'maven'
 
 group = 'org.freeswitch.esl.client'
-version = '0.10.0-SNAPSHOT'
+version = '0.10.0'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 11
+targetCompatibility = 11
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile 'io.netty:netty-all:4.1.76.Final'
-    compile 'com.google.guava:guava:29.0-jre'
-    compile 'org.slf4j:slf4j-api:1.7.30'
-    runtime 'ch.qos.logback:logback-classic:1.2.3'
-    testCompile 'junit:junit:4.8.1'
+    implementation 'io.netty:netty-all:4.1.76.Final'
+    implementation 'com.google.guava:guava:29.0-jre'
+    implementation 'org.slf4j:slf4j-api:1.7.30'
+    runtimeOnly 'ch.qos.logback:logback-classic:1.2.3'
+    testImplementation 'junit:junit:4.8.1'
 }
