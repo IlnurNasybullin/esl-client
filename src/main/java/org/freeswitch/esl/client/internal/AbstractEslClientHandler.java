@@ -112,12 +112,12 @@ public abstract class AbstractEslClientHandler extends SimpleChannelInboundHandl
 		switch (contentType) {
 			case Value.API_RESPONSE:
 				log.debug("Api response received [{}]", message);
-				apiCalls.poll().complete(message);
+				apiCalls.poll().completeAsync(() -> message);
 				break;
 
 			case Value.COMMAND_REPLY:
 				log.debug("Command reply received [{}]", message);
-				apiCalls.poll().complete(message);
+				apiCalls.poll().completeAsync(() -> message);
 				break;
 
 			case Value.AUTH_REQUEST:
