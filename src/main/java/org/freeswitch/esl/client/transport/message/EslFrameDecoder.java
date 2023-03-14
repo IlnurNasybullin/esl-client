@@ -24,6 +24,7 @@ import org.freeswitch.esl.client.transport.message.EslHeaders.Name;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -181,17 +182,23 @@ public class EslFrameDecoder extends ReplayingDecoder<EslFrameDecoder.State> {
 		StringBuilder sb = new StringBuilder(64);
 		while (buffer.isReadable()) {
 			// this read should always succeed
-			byte nextByte = buffer.readByte();
-			if (nextByte == LF) {
+			int length = buffer.bytesBefore(LF);
+			if (length == 0) {
+				buffer.readByte();
 				return sb.toString();
-			} else {
-				// Abort decoding if the decoded line is too large.
-				if (sb.length() >= maxLineLength) {
-					throw new TooLongFrameException(
-						"ESL message line is longer than " + maxLineLength + " bytes.");
-				}
-				sb.append((char) nextByte);
 			}
+
+			// not found
+			byte[] bytes;
+			if (length == -1) {
+				bytes = new byte[buffer.readableBytes()];
+			} else {
+				bytes = new byte[length];
+			}
+
+			buffer.readBytes(bytes);
+			String body = new String(bytes, StandardCharsets.UTF_8);
+			sb.append(body);
 		}
 
 		return sb.toString();
