@@ -178,6 +178,12 @@ public class EslFrameDecoder extends ReplayingDecoder<EslFrameDecoder.State> {
 		}
 	}
 
+	/**
+	 * TODO: currently is a bad (can be bugs) solution, since:
+	 * utf-8 can contain a variable number of bytes, and a symbol encoded with several bytes can be divided between two strings
+	 * @param maxLineLength - currently is not used (but think about it using)
+	 * @see <a href="https://www.rfc-editor.org/rfc/rfc3629">RFC-3629 UTF-8</a>
+	 */
 	private String readLine(ByteBuf buffer, int maxLineLength) throws TooLongFrameException {
 		StringBuilder sb = new StringBuilder(64);
 		while (buffer.isReadable()) {
@@ -188,9 +194,8 @@ public class EslFrameDecoder extends ReplayingDecoder<EslFrameDecoder.State> {
 				return sb.toString();
 			}
 
-			// not found
 			byte[] bytes;
-			if (length == -1) {
+			if (length == -1) { // not found
 				bytes = new byte[buffer.readableBytes()];
 			} else {
 				bytes = new byte[length];
